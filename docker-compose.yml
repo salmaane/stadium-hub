@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  mongo-match:
+    image: mongo
+    container_name: mongo-match
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: salmane
+      MONGO_INITDB_DATABASE: match-service
+    volumes:
+      - ./data/mongo-match:/data/db
+
+  mongo-ticket:
+    image: mongo
+    container_name: mongo-ticket
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: salmane
+      MONGO_INITDB_DATABASE: ticket-service
+    volumes:
+      - ./data/mongo-ticket:/data/db
+
+  mongo-booking:
+    image: mongo
+    container_name: mongo-booking
+    ports:
+      - "27019:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: salmane
+      MONGO_INITDB_DATABASE: booking-service
+    volumes:
+      - ./data/mongo-booking:/data/db

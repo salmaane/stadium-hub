@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: ticket-service
+  data:
+    mongodb:
+      uri: mongodb://admin:salmane@localhost:27018/ticket-service

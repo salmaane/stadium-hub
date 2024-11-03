@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: booking-service
+  data:
+    mongodb:
+      uri: mongodb://admin:salmane@localhost:27019/booking-service
