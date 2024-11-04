@@ -37,5 +37,6 @@ public class Match {
     public static class SeatCategory {
         private String category;
         private int totalSeats;
+        private int price;
     }
 }

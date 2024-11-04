@@ -4,3 +4,15 @@ spring:
   data:
     mongodb:
       uri: mongodb://admin:salmane@localhost:27018/ticket-service
+  cloud:
+    discovery:
+      enabled: false
+    config:
+      enabled: false
+
+resilience4j:
+  retry:
+    instances:
+      reserveTicketRetry:
+        max-attempts: 3
+        wait-duration: 300ms
