@@ -1,9 +1,12 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: ticket-service
   data:
     mongodb:
-      uri: mongodb://admin:salmane@localhost:27018/ticket-service
+      uri: mongodb://root:salmane@localhost:27018/ticket-service?authSource=admin
   cloud:
     discovery:
       enabled: false

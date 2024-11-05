@@ -1,11 +1,14 @@
 package org.salmane.matchservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.salmane.matchservice.Enum.MatchStatus;
+import org.salmane.matchservice.client.TicketClient;
 import org.salmane.matchservice.dao.MatchDAO;
 import org.salmane.matchservice.dto.MatchRequest;
 import org.salmane.matchservice.dto.MatchResponse;
 import org.salmane.matchservice.dto.MatchUpdateRequest;
+import org.salmane.matchservice.exception.TicketsCreationFailureException;
 import org.salmane.matchservice.model.Match;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +17,11 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MatchService {
 
     private final MatchDAO matchDAO;
+    private final TicketClient ticketClient;
 
     public List<MatchResponse> findAll() {
         return matchDAO.findAll().stream().map(match -> new MatchResponse(
@@ -48,10 +53,14 @@ public class MatchService {
                 .build();
 
         //**
-        // tickets creation logic
+        // tickets creation
         //**
+        if(!ticketClient.generateMatchTickets(match.getId(), match.getSeatCategories())) {
+            throw new TicketsCreationFailureException("Failed to create tickets for match " + match.getId());
+        }
 
         matchDAO.save(match);
+        log.info("match with id {} created succeffully", match.getId());
         return new MatchResponse(
                 match.getId(), match.getKickoffTime(), match.getStadium(),
                 match.getStatus(), match.getCity(), match.getHomeTeam(),

@@ -26,8 +26,8 @@ public class TicketController {
     }
 
     @PostMapping("/match/{matchId}/generate")
-    public void generateMatchTickets(@PathVariable String matchId, @RequestBody List<SeatCategory> seatCategories) {
-        ticketService.generateMatchTickets(matchId, seatCategories);
+    public Boolean generateMatchTickets(@PathVariable String matchId, @RequestBody List<SeatCategory> seatCategories) {
+        return ticketService.generateMatchTickets(matchId, seatCategories);
     }
 
     @PostMapping("/reserve")

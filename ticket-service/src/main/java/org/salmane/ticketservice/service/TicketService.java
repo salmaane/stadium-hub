@@ -38,29 +38,37 @@ public class TicketService {
         )).toList();
     }
 
-    public void generateMatchTickets(String matchId, List<SeatCategory> seatCategories) {
-        List<Ticket> ticketsBatch = new ArrayList<>();
-        int BATCH_SIZE = 10_000;
+    public Boolean generateMatchTickets(String matchId, List<SeatCategory> seatCategories) {
+        try {
+            List<Ticket> ticketsBatch = new ArrayList<>();
+            int BATCH_SIZE = 10_000;
 
-        for(SeatCategory seatCategory : seatCategories) {
-            for(int i=0; i<seatCategory.totalSeats(); i++) {
-                Ticket ticket = Ticket.builder()
-                        .id(UUID.randomUUID().toString())
-                        .matchId(matchId)
-                        .category(seatCategory.category())
-                        .price(seatCategory.price())
-                        .seatNumber(i+1)
-                        .status(TicketStatus.AVAILABLE)
-                        .build();
+            for(SeatCategory seatCategory : seatCategories) {
+                for(int i=0; i<seatCategory.totalSeats(); i++) {
+                    Ticket ticket = Ticket.builder()
+                            .id(UUID.randomUUID().toString())
+                            .matchId(matchId)
+                            .category(seatCategory.category())
+                            .price(seatCategory.price())
+                            .seatNumber(i+1)
+                            .status(TicketStatus.AVAILABLE)
+                            .build();
 
-                ticketsBatch.add(ticket);
+                    ticketsBatch.add(ticket);
 
-                if(ticketsBatch.size() >= BATCH_SIZE) {
-                    ticketDAO.saveAll(ticketsBatch);
-                    ticketsBatch.clear();
+                    if(ticketsBatch.size() >= BATCH_SIZE) {
+                        ticketDAO.saveAll(ticketsBatch);
+                        ticketsBatch.clear();
+                    }
                 }
             }
+
+            ticketDAO.saveAll(ticketsBatch);
+        } catch (Exception e) {
+            log.error("tickets of match {} failed to generate : {}", matchId, e.getMessage());
+            return false;
         }
+        return true;
     }
 
     @Retry(name = "reserveTicketRetry", fallbackMethod = "reserveTicketFallback")
