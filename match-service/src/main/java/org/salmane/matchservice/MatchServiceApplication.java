@@ -30,28 +30,12 @@ public class MatchServiceApplication {
                             "Stade d'honeur",
                             List.of(
                                     new Match.SeatCategory("VIP", 500, 500),
-                                    new Match.SeatCategory("Tribune", 15000, 200),
-                                    new Match.SeatCategory("Regular", 25000, 100)
+                                    new Match.SeatCategory("Tribune", 15_000, 200),
+                                    new Match.SeatCategory("Regular", 25_000, 100)
                             ),
                             "Casablanca",
                             "Raja Casablanca",
                             "Wydad Casablanca"
-                    ),
-                    new MatchRequest(
-                            LocalDateTime.of(2024, 11, 16, 20, 0),
-                            "Stadium B",
-                            List.of(new Match.SeatCategory("VIP", 8000, 500), new Match.SeatCategory("Regular", 22000, 100)),
-                            "City Y",
-                            "Team Gamma",
-                            "Team Delta"
-                    ),
-                    new MatchRequest(
-                            LocalDateTime.of(2024, 11, 17, 17, 45),
-                            "Stadium C",
-                            List.of(new Match.SeatCategory("Economy", 30000, 50), new Match.SeatCategory("Regular", 15000, 100)),
-                            "City Z",
-                            "Team Epsilon",
-                            "Team Zeta"
                     )
             );
 

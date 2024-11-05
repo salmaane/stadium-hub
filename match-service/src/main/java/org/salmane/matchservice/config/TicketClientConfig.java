@@ -1,7 +1,9 @@
 package org.salmane.matchservice.config;
 
+import lombok.RequiredArgsConstructor;
 import org.salmane.matchservice.client.TicketClient;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
@@ -9,15 +11,16 @@ import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
+@RequiredArgsConstructor
 public class TicketClientConfig {
 
-    @Value("${ticket.url}")
-    private String ticketServerUrl;
+    private final DiscoveryClient discoveryClient;
 
     @Bean
     public TicketClient ticketClient() {
+        ServiceInstance serviceInstance = discoveryClient.getInstances("ticket-service").get(0);
         RestClient restClient = RestClient.builder()
-                .baseUrl(ticketServerUrl)
+                .baseUrl(serviceInstance.getUri().toString())
                 .build();
 
         var restClientAdapter = RestClientAdapter.create(restClient);

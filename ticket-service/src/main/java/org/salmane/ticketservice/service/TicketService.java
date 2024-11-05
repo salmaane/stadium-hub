@@ -12,6 +12,7 @@ import org.salmane.ticketservice.dto.TicketResponse;
 import org.salmane.ticketservice.exception.TicketNotFoundException;
 import org.salmane.ticketservice.model.Ticket;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +25,26 @@ public class TicketService {
     private final TicketDAO ticketDAO;
 
     public List<TicketResponse> getMatchTickets(String matchId, String category, TicketStatus status) {
-        Ticket ticketExample = new Ticket();
+        List<Ticket> tickets;
 
-        ticketExample.setMatchId(matchId);
-        if(category != null) ticketExample.setCategory(category);
-        if(status != null) ticketExample.setStatus(status);
+        if (category != null && status != null) {
+            // Find by matchId, category, and status
+            tickets = ticketDAO.findByMatchIdAndCategoryAndStatus(matchId, category, status);
+        } else if (category != null) {
+            // Find by matchId and category
+            tickets = ticketDAO.findByMatchIdAndCategory(matchId, category);
+        } else if (status != null) {
+            // Find by matchId and status
+            tickets = ticketDAO.findByMatchIdAndStatus(matchId, status);
+        } else {
+            // Find by matchId only
+            tickets = ticketDAO.findByMatchId(matchId);
+        }
 
-        Example<Ticket> example = Example.of(ticketExample);
-
-        return ticketDAO.findAll(example).stream().map(ticket -> new TicketResponse(
-                ticket.getId(), ticket.getMatchId(), ticket.getUserId(), ticket.getSeatNumber(),
-                ticket.getCategory(), ticket.getStatus(), ticket.getPrice()
+        return tickets.stream().map(ticket -> new TicketResponse(
+                ticket.getId(), ticket.getMatchId(), ticket.getUserId(),
+                ticket.getSeatNumber(), ticket.getCategory(),
+                ticket.getStatus(), ticket.getPrice()
         )).toList();
     }
 

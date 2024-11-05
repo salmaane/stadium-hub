@@ -1,16 +1,16 @@
 spring:
   application:
     name: match-service
-
   data:
     mongodb:
       uri: mongodb://root:salmane@localhost:27017/match-service?authSource=admin
 
   cloud:
+    discovery:
+      enabled: true
     config:
       enabled: false
-    discovery:
-      enabled: false
 
-ticket:
-  url: "http://localhost:8081"
+eureka:
+  instance:
+    prefer-ip-address: true

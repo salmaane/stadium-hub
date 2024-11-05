@@ -9,9 +9,13 @@ spring:
       uri: mongodb://root:salmane@localhost:27018/ticket-service?authSource=admin
   cloud:
     discovery:
-      enabled: false
+      enabled: true
     config:
       enabled: false
+
+eureka:
+  instance:
+    prefer-ip-address: true
 
 resilience4j:
   retry:

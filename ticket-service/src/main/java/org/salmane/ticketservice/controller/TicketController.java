@@ -1,6 +1,7 @@
 package org.salmane.ticketservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.salmane.ticketservice.Enum.TicketStatus;
 import org.salmane.ticketservice.dto.ConfirmationRequest;
 import org.salmane.ticketservice.dto.ReservationRequest;
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/api/v1/tickets")
+@RestController
+@RequestMapping("/api/tickets")
 @RequiredArgsConstructor
 public class TicketController {
     private final TicketService ticketService;

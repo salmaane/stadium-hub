@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/matches")
+@RequestMapping("/api/matches")
 @RequiredArgsConstructor
 public class MatchController {
 
