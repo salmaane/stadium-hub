@@ -6,6 +6,11 @@ spring:
     name: ticket-service
 
   config:
-    import: optional:configserver:http://localhost:9999
+    import: optional:configserver:config-service
 
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service
 
