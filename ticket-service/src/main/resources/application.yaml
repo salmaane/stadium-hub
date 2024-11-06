@@ -4,22 +4,8 @@ server:
 spring:
   application:
     name: ticket-service
-  data:
-    mongodb:
-      uri: mongodb://root:salmane@localhost:27018/ticket-service?authSource=admin
-  cloud:
-    discovery:
-      enabled: true
-    config:
-      enabled: false
 
-eureka:
-  instance:
-    prefer-ip-address: true
+  config:
+    import: optional:configserver:http://localhost:9999
 
-resilience4j:
-  retry:
-    instances:
-      reserveTicketRetry:
-        max-attempts: 3
-        wait-duration: 300ms
+
