@@ -7,6 +7,7 @@ import org.salmane.matchservice.service.MatchService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 @SpringBootApplication
 @EnableMongoAuditing
+@EnableFeignClients
 public class MatchServiceApplication {
 
     public static void main(String[] args) {
