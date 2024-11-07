@@ -11,7 +11,6 @@ import org.salmane.matchservice.dto.MatchUpdateRequest;
 import org.salmane.matchservice.exception.TicketsCreationFailureException;
 import org.salmane.matchservice.model.Match;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
 

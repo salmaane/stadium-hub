@@ -5,14 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.salmane.ticketservice.Enum.TicketStatus;
 import org.salmane.ticketservice.dao.TicketDAO;
-import org.salmane.ticketservice.dto.ConfirmationRequest;
-import org.salmane.ticketservice.dto.ReservationRequest;
-import org.salmane.ticketservice.dto.SeatCategory;
-import org.salmane.ticketservice.dto.TicketResponse;
+import org.salmane.ticketservice.dto.*;
 import org.salmane.ticketservice.exception.TicketNotFoundException;
 import org.salmane.ticketservice.model.Ticket;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,14 +77,14 @@ public class TicketService {
     }
 
     @Retry(name = "reserveTicketRetry", fallbackMethod = "reserveTicketFallback")
-    public Boolean reserveTicket(ReservationRequest reservationRequest) {
+    public String reserveTicket(ReservationRequest reservationRequest) {
         Ticket ticket = ticketDAO.findFirstByMatchIdAndCategoryAndStatus(
                 reservationRequest.matchId(), reservationRequest.category(), TicketStatus.AVAILABLE
         );
 
         if(ticket == null) {
             log.warn("No tickets left for the match {}", reservationRequest.matchId());
-            return false;
+            return null;
         }
 
         ticket.setUserId(reservationRequest.userId());
@@ -97,13 +92,13 @@ public class TicketService {
 
         ticketDAO.save(ticket);
         log.info("Ticket {} reserved successfully for user {}", ticket.getId(), reservationRequest.userId());
-        return true;
+        return ticket.getId();
     }
 
-    public Boolean reserveTicketFallback(ReservationRequest reservationRequest, Throwable t) {
+    public String reserveTicketFallback(ReservationRequest reservationRequest, Throwable t) {
         log.error("Failed to reserve ticket after retries for match {}: {}",
                 reservationRequest.matchId(), t.getMessage());
-        return false;
+        return null;
     }
 
     public Boolean confirmTicketPurchase(ConfirmationRequest confirmationRequest) {

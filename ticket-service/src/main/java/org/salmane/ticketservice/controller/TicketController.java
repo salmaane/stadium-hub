@@ -3,10 +3,7 @@ package org.salmane.ticketservice.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.salmane.ticketservice.Enum.TicketStatus;
-import org.salmane.ticketservice.dto.ConfirmationRequest;
-import org.salmane.ticketservice.dto.ReservationRequest;
-import org.salmane.ticketservice.dto.SeatCategory;
-import org.salmane.ticketservice.dto.TicketResponse;
+import org.salmane.ticketservice.dto.*;
 import org.salmane.ticketservice.service.TicketService;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +30,7 @@ public class TicketController {
     }
 
     @PostMapping("/reserve")
-    public Boolean reserveTicket(@RequestBody ReservationRequest reservationRequest) {
+    public String reserveTicket(@RequestBody ReservationRequest reservationRequest) {
         return ticketService.reserveTicket(reservationRequest);
     }
 

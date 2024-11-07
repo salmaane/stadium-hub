@@ -13,3 +13,12 @@ spring:
       discovery:
         enabled: true
         service-id: config-server
+
+resilience4j.retry:
+  instances:
+    reserveTicketRetry:
+      maxAttempts: 3
+      waitDuration: 100ms
+      retryExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+        - feign.FeignException
