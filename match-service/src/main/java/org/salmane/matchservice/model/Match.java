@@ -24,9 +24,9 @@ public class Match {
     private String homeTeam;
     private String awayTeam;
     @CreatedDate
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
     @LastModifiedDate
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
     @Version
     private Integer version;
 

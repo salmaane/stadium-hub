@@ -42,7 +42,7 @@ public class BookingController {
         return bookingService.reserveTicket(reservationRequest);
     }
 
-    @PutMapping("/{id}/confirm")
+    @GetMapping("/{id}/confirm")
     public ResponseEntity<String> confirmBooking(@PathVariable("id") String id) {
         if(bookingService.confirmBooking(id) != null) {
             return ResponseEntity.ok("Booking confirmed");

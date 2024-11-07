@@ -70,7 +70,7 @@ public class BookingService {
 
     @Retry(name = "reserveTicketRetry", fallbackMethod = "reserveTicketFallback")
     public String reserveTicket(ReservationRequest reservationRequest) {
-        String ticketId = ticketClient.reserveTicket(reservationRequest);
+            String ticketId = ticketClient.reserveTicket(reservationRequest);
 
         if(ticketId == null) {
             log.warn("No tickets available for match {}", reservationRequest.matchId());
@@ -134,7 +134,7 @@ public class BookingService {
         return booking.getId();
     }
 
-    @Scheduled(fixedRate = 60000)
+
     public void cancelExpiredBookings() {
         LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(1);
         List<Booking> expiredBookings = bookingDAO.findByStatusAndCreatedAtBefore(BookingStatus.PENDING, expirationTime);

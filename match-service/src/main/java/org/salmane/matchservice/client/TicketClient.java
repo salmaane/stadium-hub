@@ -10,8 +10,8 @@ import java.util.List;
 @FeignClient(name = "ticket-service", path = "/api/tickets")
 public interface TicketClient {
 
-    @PostMapping("/match/{matchId}/generate")
 //    @CircuitBreaker(name = "ticketService", fallbackMethod = "fallback")
+    @PostMapping("/match/{matchId}/generate")
     Boolean generateMatchTickets(@PathVariable String matchId, @RequestBody List<Match.SeatCategory> seatCategories);
 
     default Boolean fallback(String matchId, List<Match.SeatCategory> seatCategories, Exception e) {
