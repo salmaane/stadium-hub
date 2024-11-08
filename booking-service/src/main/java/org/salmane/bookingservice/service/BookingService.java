@@ -31,7 +31,7 @@ public class BookingService {
 
         return new BookingResponse(
                 booking.getId(), booking.getUserId(), booking.getMatchId(), booking.getTicketId(),
-                booking.getStatus(), booking.getBookingDate(),
+                booking.getStatus(), booking.getCreatedAt(),
                 booking.getConfirmationDate(), booking.getCancellationDate()
         );
     }
@@ -45,7 +45,7 @@ public class BookingService {
 
         return bookings.stream().map(booking -> new BookingResponse(
                 booking.getId(), booking.getUserId(), booking.getMatchId(), booking.getTicketId(),
-                booking.getStatus(), booking.getBookingDate(),
+                booking.getStatus(), booking.getCreatedAt(),
                 booking.getConfirmationDate(), booking.getCancellationDate()
         )).toList();
     }
@@ -63,7 +63,7 @@ public class BookingService {
 
         return new BookingResponse(
                 booking.getId(), booking.getUserId(), booking.getMatchId(), booking.getTicketId(),
-                booking.getStatus(), booking.getBookingDate(),
+                booking.getStatus(), booking.getCreatedAt(),
                 booking.getConfirmationDate(), booking.getCancellationDate()
         );
     }
@@ -82,7 +82,6 @@ public class BookingService {
                 .matchId(reservationRequest.matchId())
                 .ticketId(ticketId)
                 .status(BookingStatus.PENDING)
-                .bookingDate(LocalDateTime.now())
                 .userId(reservationRequest.userId())
                 .build();
 
@@ -134,10 +133,13 @@ public class BookingService {
         return booking.getId();
     }
 
-
+    @Scheduled(fixedDelay = 60_000)
     public void cancelExpiredBookings() {
-        LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(1);
-        List<Booking> expiredBookings = bookingDAO.findByStatusAndCreatedAtBefore(BookingStatus.PENDING, expirationTime);
+        // Booking expiration time in minues
+        LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(2);
+        List<Booking> expiredBookings = bookingDAO.findBookingsByStatusAndCreatedAtBefore(
+                BookingStatus.PENDING, expirationTime
+        );
 
         for (Booking booking : expiredBookings) {
             try {

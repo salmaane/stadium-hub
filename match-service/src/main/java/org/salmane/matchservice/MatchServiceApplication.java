@@ -1,6 +1,5 @@
 package org.salmane.matchservice;
 
-import org.salmane.matchservice.dao.MatchDAO;
 import org.salmane.matchservice.dto.MatchRequest;
 import org.salmane.matchservice.model.Match;
 import org.salmane.matchservice.service.MatchService;
@@ -40,6 +39,8 @@ public class MatchServiceApplication {
                             "Wydad Casablanca"
                     )
             );
+
+            Thread.sleep(5_000);
 
             matches.stream().forEach((matchRequest) -> {
                 matchService.createMatch(matchRequest);

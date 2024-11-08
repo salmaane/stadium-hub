@@ -9,7 +9,7 @@ public record BookingResponse(
         String matchId,
         String ticketId,
         BookingStatus status,
-        LocalDateTime bookingDate,
+        LocalDateTime createdAt,
         LocalDateTime confirmationDate,
         LocalDateTime cancellationDate
 ) {}

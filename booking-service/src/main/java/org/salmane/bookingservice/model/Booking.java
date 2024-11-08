@@ -18,14 +18,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Booking {
-    String id;
-    String userId;
-    String matchId;
-    String ticketId;
-    BookingStatus status;
-    LocalDateTime bookingDate;
-    LocalDateTime confirmationDate;
-    LocalDateTime cancellationDate;
+    private String id;
+    private String userId;
+    private String matchId;
+    private String ticketId;
+    private BookingStatus status;
+    private LocalDateTime confirmationDate;
+    private LocalDateTime cancellationDate;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate

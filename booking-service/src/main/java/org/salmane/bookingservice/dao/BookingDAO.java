@@ -12,5 +12,5 @@ public interface BookingDAO extends MongoRepository<Booking, String> {
 
     List<Booking> findByUserId(String userId);
 
-    List<Booking> findByStatusAndCreatedAtBefore(BookingStatus bookingStatus, LocalDateTime expirationTime);
+    List<Booking> findBookingsByStatusAndCreatedAtBefore(BookingStatus bookingStatus, LocalDateTime expirationTime);
 }
