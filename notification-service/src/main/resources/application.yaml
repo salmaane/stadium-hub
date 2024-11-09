@@ -1,0 +1,22 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: notification-service
+
+  config:
+    import: optional:configserver:config-service
+
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service
+
+  # Mail configuration
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
+    username: ${MAILTRAP_USERNAME}
+    password: ${MAILTRAP_PASSWORD}

@@ -35,12 +35,12 @@ public class TicketController {
     }
 
     @PostMapping("/confirmation")
-    public Boolean confirmTicketPurchase(@RequestBody ConfirmationRequest confirmationRequest) {
+    public TicketResponse confirmTicketPurchase(@RequestBody ConfirmationRequest confirmationRequest) {
         return ticketService.confirmTicketPurchase(confirmationRequest);
     }
 
     @PostMapping("/cancel")
-    public Boolean cancelTicketReservation(@RequestBody ConfirmationRequest cancellationRequest) {
+    public TicketResponse cancelTicketReservation(@RequestBody ConfirmationRequest cancellationRequest) {
         return ticketService.cancelTicketReservation(cancellationRequest);
     }
 }

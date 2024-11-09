@@ -101,7 +101,7 @@ public class TicketService {
         return null;
     }
 
-    public Boolean confirmTicketPurchase(ConfirmationRequest confirmationRequest) {
+    public TicketResponse confirmTicketPurchase(ConfirmationRequest confirmationRequest) {
         Ticket ticket = ticketDAO.findByIdAndUserId(confirmationRequest.ticketId(), confirmationRequest.userId())
             .orElseThrow(
                 () -> new TicketNotFoundException("Ticket "+ confirmationRequest.ticketId() +" not found.")
@@ -111,10 +111,14 @@ public class TicketService {
 
         ticketDAO.save(ticket);
         log.info("Ticket {} sold successfully for user {}", ticket.getId(), confirmationRequest.userId());
-        return true;
+        return new TicketResponse(
+                ticket.getId(), ticket.getMatchId(), ticket.getUserId(),
+                ticket.getSeatNumber(), ticket.getCategory(),
+                ticket.getStatus(), ticket.getPrice()
+        );
     }
 
-    public Boolean cancelTicketReservation(ConfirmationRequest cancellationRequest) {
+    public TicketResponse cancelTicketReservation(ConfirmationRequest cancellationRequest) {
         Ticket ticket = ticketDAO.findByIdAndUserId(cancellationRequest.ticketId(), cancellationRequest.userId())
                 .orElseThrow(
                         () -> new TicketNotFoundException("Ticket "+ cancellationRequest.ticketId() +" not found.")
@@ -125,6 +129,10 @@ public class TicketService {
 
         ticketDAO.save(ticket);
         log.info("Ticket {} reservation cancelled successfully for user {}", ticket.getId(), cancellationRequest.userId());
-        return true;
+        return new TicketResponse(
+                ticket.getId(), ticket.getMatchId(), ticket.getUserId(),
+                ticket.getSeatNumber(), ticket.getCategory(),
+                ticket.getStatus(), ticket.getPrice()
+        );
     }
 }

@@ -4,11 +4,11 @@ import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.salmane.bookingservice.Enum.BookingStatus;
+import org.salmane.bookingservice.client.MatchClient;
 import org.salmane.bookingservice.client.TicketClient;
 import org.salmane.bookingservice.dao.BookingDAO;
-import org.salmane.bookingservice.dto.ConfirmationRequest;
-import org.salmane.bookingservice.dto.ReservationRequest;
-import org.salmane.bookingservice.dto.BookingResponse;
+import org.salmane.bookingservice.dto.*;
+import org.salmane.bookingservice.event.BookingCompletedEvent;
 import org.salmane.bookingservice.exception.BookingNotFoundException;
 import org.salmane.bookingservice.model.Booking;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,6 +24,8 @@ public class BookingService {
 
     private final BookingDAO bookingDAO;
     private final TicketClient ticketClient;
+    private final BookingProducer bookingProducer;
+    private final MatchClient matchClient;
 
     public BookingResponse getBookingById(String id) {
         Booking booking = bookingDAO.findById(id)
@@ -103,13 +105,28 @@ public class BookingService {
             return null;
         }
 
-        if(!ticketClient.confirmTicketPurchase(new ConfirmationRequest(booking.getTicketId(), booking.getUserId()))) {
+        TicketResponse ticketResponse = ticketClient.confirmTicketPurchase(
+                new ConfirmationRequest(booking.getTicketId(), booking.getUserId())
+        );
+
+        if(ticketResponse == null) {
             log.error("Failed to confirm ticket {} reservation", id);
             return null;
         }
 
         booking.setStatus(BookingStatus.CONFIRMED);
         bookingDAO.save(booking);
+
+        // Sending confirmation event through kafka
+        MatchResponse matchResponse = matchClient.findMatchById(booking.getMatchId());
+        if(matchResponse != null) {
+            BookingCompletedEvent bookingCompletedEvent = new BookingCompletedEvent(
+                matchResponse.id(), matchResponse.kickoffTime(), matchResponse.stadium(), matchResponse.city(),
+                matchResponse.homeTeam(), matchResponse.awayTeam(), ticketResponse.id(), ticketResponse.userId(),
+                ticketResponse.seatNumber(), ticketResponse.category(), ticketResponse.price()
+            );
+            bookingProducer.sendConfirmationEvent(bookingCompletedEvent);
+        }
 
         return booking.getId();
     }
@@ -122,13 +139,28 @@ public class BookingService {
             return null;
         }
 
-        if(!ticketClient.cancelTicketReservation(new ConfirmationRequest(booking.getTicketId(), booking.getUserId()))) {
+        TicketResponse ticketResponse = ticketClient.cancelTicketReservation(
+                new ConfirmationRequest(booking.getTicketId(), booking.getUserId())
+        );
+
+        if(ticketResponse == null) {
             log.error("Failed to cancel ticket {} reservation", id);
             return null;
         }
 
         booking.setStatus(BookingStatus.CANCELLED);
         bookingDAO.save(booking);
+
+        // Sending cancellation event through kafka
+        MatchResponse matchResponse = matchClient.findMatchById(booking.getMatchId());
+        if(matchResponse != null) {
+            BookingCompletedEvent bookingCompletedEvent = new BookingCompletedEvent(
+                    matchResponse.id(), matchResponse.kickoffTime(), matchResponse.stadium(), matchResponse.city(),
+                    matchResponse.homeTeam(), matchResponse.awayTeam(), ticketResponse.id(), ticketResponse.userId(),
+                    ticketResponse.seatNumber(), ticketResponse.category(), ticketResponse.price()
+            );
+            bookingProducer.sendCancellationEvent(bookingCompletedEvent);
+        }
 
         return booking.getId();
     }

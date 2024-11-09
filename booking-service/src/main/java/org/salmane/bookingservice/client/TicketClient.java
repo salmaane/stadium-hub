@@ -2,6 +2,7 @@ package org.salmane.bookingservice.client;
 
 import org.salmane.bookingservice.dto.ConfirmationRequest;
 import org.salmane.bookingservice.dto.ReservationRequest;
+import org.salmane.bookingservice.dto.TicketResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,8 +14,8 @@ public interface TicketClient {
     String reserveTicket(@RequestBody ReservationRequest reservationRequest);
 
     @PostMapping("/confirmation")
-    public Boolean confirmTicketPurchase(@RequestBody ConfirmationRequest confirmationRequest);
+    public TicketResponse confirmTicketPurchase(@RequestBody ConfirmationRequest confirmationRequest);
 
     @PostMapping("/cancel")
-    public Boolean cancelTicketReservation(@RequestBody ConfirmationRequest cancellationRequest);
+    public TicketResponse cancelTicketReservation(@RequestBody ConfirmationRequest cancellationRequest);
 }
