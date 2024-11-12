@@ -10,10 +10,10 @@ spring:
 
   # Mail configuration
   mail:
-    host: sandbox.smtp.mailtrap.io
-    port: 2525
-    username: ${MAILTRAP_USERNAME}
-    password: ${MAILTRAP_PASSWORD}
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
 
 eureka:
   instance:

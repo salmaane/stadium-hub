@@ -150,7 +150,7 @@ services:
     environment:
       - DISCOVERY_SERVICE_URL=${DISCOVERY_SERVICE_URL}
       - CONFIG_SERVICE_URL=${CONFIG_SERVICE_URL}
-      - MONGODB-URL=mongodb://root:salmane@mongo-ticket:27017/ticket-service?authSource=admin
+      - MONGODB_URL=mongodb://root:salmane@mongo-ticket:27017/ticket-service?authSource=admin
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
       interval: 10s
@@ -171,7 +171,7 @@ services:
     environment:
       - DISCOVERY_SERVICE_URL=${DISCOVERY_SERVICE_URL}
       - CONFIG_SERVICE_URL=${CONFIG_SERVICE_URL}
-      - MONGODB-URL=mongodb://root:salmane@mongo-match:27017/match-service?authSource=admin
+      - MONGODB_URL=mongodb://root:salmane@mongo-match:27017/match-service?authSource=admin
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 10s
@@ -194,6 +194,8 @@ services:
     environment:
       - DISCOVERY_SERVICE_URL=${DISCOVERY_SERVICE_URL}
       - CONFIG_SERVICE_URL=${CONFIG_SERVICE_URL}
+      - MONGODB_URL=mongodb://root:salmane@mongo-booking:27017/booking-service?authSource=admin
+      - KAFKA_URL=kafka:29092
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
       interval: 10s
@@ -214,6 +216,11 @@ services:
     environment:
       - DISCOVERY_SERVICE_URL=${DISCOVERY_SERVICE_URL}
       - CONFIG_SERVICE_URL=${CONFIG_SERVICE_URL}
+      - KAFKA_URL=kafka:29092
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PORT=${MAIL_PORT}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8083/actuator/health" ]
       interval: 10s
