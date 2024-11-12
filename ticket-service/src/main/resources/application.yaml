@@ -6,11 +6,11 @@ spring:
     name: ticket-service
 
   config:
-    import: optional:configserver:config-service
+    import: optional:configserver:${CONFIG_SERVICE_URL:http://localhost:9999}
 
-  cloud:
-    config:
-      discovery:
-        enabled: true
-        service-id: config-service
-
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL:http://localhost:8761/eureka}

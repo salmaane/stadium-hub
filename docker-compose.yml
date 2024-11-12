@@ -12,6 +12,8 @@ services:
       MONGO_INITDB_DATABASE: match-service
     volumes:
       - ./data/mongo-match:/data/db
+    networks:
+      - stadium-hub-network
 
   mongo-ticket:
     image: mongo
@@ -24,6 +26,8 @@ services:
       MONGO_INITDB_DATABASE: ticket-service
     volumes:
       - ./data/mongo-ticket:/data/db
+    networks:
+      - stadium-hub-network
 
   mongo-booking:
     image: mongo
@@ -36,6 +40,8 @@ services:
       MONGO_INITDB_DATABASE: booking-service
     volumes:
       - ./data/mongo-booking:/data/db
+    networks:
+      - stadium-hub-network
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -46,6 +52,8 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - 22181:2181
+    networks:
+      - stadium-hub-network
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
@@ -62,6 +70,8 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - stadium-hub-network
 
   kafka-ui:
     container_name: kafka-ui
@@ -74,3 +84,143 @@ services:
       KAFKA_CLUSTERS_NAME: local
       KAFKA_CLUSTERS_BOOTSTRAPSERVERS: kafka:29092
       DYNAMIC_CONFIG_ENABLED: 'true'
+    networks:
+      - stadium-hub-network
+
+  stadiumhub-discovery-service:
+    build: ./discovery-service
+    container_name: discovery-service
+    ports:
+      - '8761:8761'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      retries: 3
+    networks:
+      - stadium-hub-network
+
+  stadiumhub-config-service:
+    build: ./config-service
+    container_name: config-service
+    ports:
+      - '9999:9999'
+    depends_on:
+      stadiumhub-discovery-service:
+        condition: 'service_healthy'
+    environment:
+      - DISCOVERY_SERVICE_URL=${DISCOVERY_SERVICE_URL}
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=${GIT_URI}
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME=${GIT_USERNAME}
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD=${GIT_PASSWORD}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9999/actuator/health" ]
+      interval: 10s
+      retries: 3
+    networks:
+      - stadium-hub-network
+
+  stadiumhub-gateway-service:
+    build: ./gateway-service
+    container_name: gateway-service
+    ports:
+      - '8888:8888'
+    depends_on:
+      stadiumhub-config-service:
+        condition: 'service_healthy'
+    environment:
+      - DISCOVERY_SERVICE_URL=${DISCOVERY_SERVICE_URL}
+      - CONFIG_SERVICE_URL=${CONFIG_SERVICE_URL}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
+      interval: 10s
+      retries: 3
+    networks:
+      - stadium-hub-network
+
+  stadiumhub-ticket-service:
+    build: ./ticket-service
+    container_name: ticket-service
+    ports:
+      - '8081:8081'
+    depends_on:
+      mongo-ticket:
+        condition: 'service_started'
+      stadiumhub-config-service:
+        condition: 'service_healthy'
+    environment:
+      - DISCOVERY_SERVICE_URL=${DISCOVERY_SERVICE_URL}
+      - CONFIG_SERVICE_URL=${CONFIG_SERVICE_URL}
+      - MONGODB-URL=mongodb://root:salmane@mongo-ticket:27017/ticket-service?authSource=admin
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
+      interval: 10s
+      retries: 3
+    networks:
+      - stadium-hub-network
+
+  stadiumhub-match-service:
+    build: ./match-service
+    container_name: match-service
+    ports:
+      - '8080:8080'
+    depends_on:
+      mongo-match:
+        condition: 'service_started'
+      stadiumhub-ticket-service:
+        condition: 'service_healthy'
+    environment:
+      - DISCOVERY_SERVICE_URL=${DISCOVERY_SERVICE_URL}
+      - CONFIG_SERVICE_URL=${CONFIG_SERVICE_URL}
+      - MONGODB-URL=mongodb://root:salmane@mongo-match:27017/match-service?authSource=admin
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      retries: 3
+    networks:
+      - stadium-hub-network
+
+  stadiumhub-booking-service:
+    build: ./booking-service
+    container_name: booking-service
+    ports:
+      - '8082:8082'
+    depends_on:
+      mongo-booking:
+        condition: 'service_started'
+      kafka:
+        condition: 'service_started'
+      stadiumhub-config-service:
+        condition: 'service_healthy'
+    environment:
+      - DISCOVERY_SERVICE_URL=${DISCOVERY_SERVICE_URL}
+      - CONFIG_SERVICE_URL=${CONFIG_SERVICE_URL}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
+      interval: 10s
+      retries: 3
+    networks:
+      - stadium-hub-network
+
+  stadiumhub-notification-service:
+    build: ./notification-service
+    container_name: notification-service
+    ports:
+      - '8083:8083'
+    depends_on:
+      kafka:
+        condition: 'service_started'
+      stadiumhub-config-service:
+        condition: 'service_healthy'
+    environment:
+      - DISCOVERY_SERVICE_URL=${DISCOVERY_SERVICE_URL}
+      - CONFIG_SERVICE_URL=${CONFIG_SERVICE_URL}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8083/actuator/health" ]
+      interval: 10s
+      retries: 3
+    networks:
+      - stadium-hub-network
+
+networks:
+  stadium-hub-network:
+    name: stadium-hub-network

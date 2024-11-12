@@ -6,13 +6,7 @@ spring:
     name: notification-service
 
   config:
-    import: optional:configserver:config-service
-
-  cloud:
-    config:
-      discovery:
-        enabled: true
-        service-id: config-service
+    import: optional:configserver:${CONFIG_SERVICE_URL:http://localhost:9999}
 
   # Mail configuration
   mail:
@@ -20,3 +14,10 @@ spring:
     port: 2525
     username: ${MAILTRAP_USERNAME}
     password: ${MAILTRAP_PASSWORD}
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL:http://localhost:8761/eureka}
