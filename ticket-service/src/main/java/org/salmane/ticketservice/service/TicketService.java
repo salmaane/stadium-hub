@@ -135,4 +135,8 @@ public class TicketService {
                 ticket.getStatus(), ticket.getPrice()
         );
     }
+
+    public void deleteByMatch(String matchId) {
+        ticketDAO.deleteByMatchId(matchId);
+    }
 }

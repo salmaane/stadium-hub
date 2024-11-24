@@ -19,4 +19,6 @@ public interface TicketDAO extends MongoRepository<Ticket, String> {
     List<Ticket> findByMatchIdAndStatus(String matchId, TicketStatus status);
 
     List<Ticket> findByMatchIdAndCategoryAndStatus(String matchId, String category, TicketStatus status);
+
+    void deleteByMatchId(String matchId);
 }

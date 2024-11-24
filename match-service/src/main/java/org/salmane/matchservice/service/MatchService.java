@@ -88,6 +88,7 @@ public class MatchService {
     }
 
     public void deleteMatchById(String id) {
+        ticketClient.deleteByMatch(id);
         matchDAO.deleteById(id);
     }
 }

@@ -1,9 +1,11 @@
 package org.salmane.ticketservice.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.salmane.ticketservice.Enum.TicketStatus;
-import org.salmane.ticketservice.dto.*;
+import org.salmane.ticketservice.dto.ConfirmationRequest;
+import org.salmane.ticketservice.dto.ReservationRequest;
+import org.salmane.ticketservice.dto.SeatCategory;
+import org.salmane.ticketservice.dto.TicketResponse;
 import org.salmane.ticketservice.service.TicketService;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,5 +44,10 @@ public class TicketController {
     @PostMapping("/cancel")
     public TicketResponse cancelTicketReservation(@RequestBody ConfirmationRequest cancellationRequest) {
         return ticketService.cancelTicketReservation(cancellationRequest);
+    }
+
+    @DeleteMapping("/match/{matchId}")
+    public void deleteByMatch(@PathVariable String matchId) {
+        ticketService.deleteByMatch(matchId);
     }
 }
