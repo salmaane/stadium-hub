@@ -42,9 +42,7 @@ public class MatchServiceApplication {
 
             Thread.sleep(5_000);
 
-            matches.stream().forEach((matchRequest) -> {
-                matchService.createMatch(matchRequest);
-            });
+            matches.forEach(matchService::createMatch);
         };
     }
 

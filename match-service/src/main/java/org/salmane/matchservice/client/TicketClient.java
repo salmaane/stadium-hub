@@ -1,5 +1,6 @@
 package org.salmane.matchservice.client;
 
+import org.salmane.matchservice.config.OAuthFeignConfig;
 import org.salmane.matchservice.model.Match;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "ticket-service", path = "/api/tickets")
+@FeignClient(name = "ticket-service", path = "/api/tickets", configuration = OAuthFeignConfig.class)
 public interface TicketClient {
 
 //    @CircuitBreaker(name = "ticketService", fallbackMethod = "fallback")
