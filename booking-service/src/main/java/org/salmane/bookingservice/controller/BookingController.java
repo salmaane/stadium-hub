@@ -7,6 +7,7 @@ import org.salmane.bookingservice.dto.BookingResponse;
 import org.salmane.bookingservice.service.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -27,21 +28,25 @@ public class BookingController {
         return bookingService.getBookingByUserId(userId);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @DeleteMapping("/{id}")
     public void deleteBookingById(@PathVariable("id") String id) {
         bookingService.deleteBookingById(id);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PutMapping("/{id}/status")
     public BookingResponse updateBookingStatus(@PathVariable("id") String id, @RequestBody BookingStatus status) {
         return bookingService.updateBookingStatus(id, status);
     }
 
+    @PreAuthorize("hasAnyRole('USER')")
     @PostMapping("/reserve")
     public String reserveTicket(@RequestBody ReservationRequest reservationRequest) {
         return bookingService.reserveTicket(reservationRequest);
     }
 
+    @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/{id}/confirm")
     public ResponseEntity<String> confirmBooking(@PathVariable("id") String id) {
         if(bookingService.confirmBooking(id) != null) {
