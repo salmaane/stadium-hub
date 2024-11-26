@@ -16,13 +16,11 @@ public class MatchController {
 
     private final MatchService matchService;
 
-    //    @PreAuthorize("hasAnyRole('SYSTEM')")
     @GetMapping
     public List<MatchResponse> getAllMatches() {
         return matchService.findAll();
     }
 
-    //    @PreAuthorize("hasAnyRole('SYSTEM')")
     @GetMapping("/{id}")
     public MatchResponse findMatchById(@PathVariable String id) {
         return matchService.findById(id);

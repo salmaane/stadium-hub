@@ -39,9 +39,6 @@ public class MatchServiceApplication {
                             "Wydad Casablanca"
                     )
             );
-
-            Thread.sleep(5_000);
-
             matches.forEach(matchService::createMatch);
         };
     }

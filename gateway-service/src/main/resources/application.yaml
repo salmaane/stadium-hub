@@ -12,7 +12,19 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${ISSUER_URL:http://localhost:8181/realms/stadiumhub-security-realm}
+          issuer-uri: ${ISSUER_URI:http://localhost:8181/realms/stadiumhub-security-realm}
+      client:
+        registration:
+          keycloak:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+            scope: openid
+            provider: keycloak
+        provider:
+          keycloak:
+            issuer-uri: ${ISSUER_URI:http://localhost:8181/realms/stadiumhub-security-realm}
+            token-uri: ${TOKEN_URI:http://localhost:8181/realms/stadiumhub-security-realm/protocol/openid-connect/token}
 
 eureka:
   instance:
