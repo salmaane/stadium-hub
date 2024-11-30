@@ -24,7 +24,8 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorize -> authorize
                         .pathMatchers(HttpMethod.GET,
-                                "/match-service/api/matches", "/match-service/api/matches/{id}"
+                                "/match-service/api/matches", "/match-service/api/matches/{id}",
+                                "/actuator/refresh", "/actuator/health"
                         ).permitAll()
                         .anyExchange().authenticated()
                 )

@@ -12,7 +12,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${ISSUER_URL:http://localhost:8181/realms/stadiumhub-security-realm}
+          issuer-uri: ${ISSUER_URI:http://localhost:8181/realms/stadiumhub-security-realm}
 
 eureka:
   instance:

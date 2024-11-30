@@ -61,14 +61,13 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - 29092:29092
       - 9092:9092
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - stadium-hub-network
@@ -92,6 +91,8 @@ services:
     container_name: discovery-service
     ports:
       - '8761:8761'
+    depends_on:
+      - keycloak
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
       interval: 10s
@@ -130,6 +131,11 @@ services:
     environment:
       - DISCOVERY_SERVICE_URL=${DISCOVERY_SERVICE_URL}
       - CONFIG_SERVICE_URL=${CONFIG_SERVICE_URL}
+      # Keycloak
+      - ISSUER_URI=${ISSUER_URI}
+      - TOKEN_URI=${TOKEN_URI}
+      - CLIENT_ID=${GATEWAY_CLIENT_ID}
+      - CLIENT_SECRET=${GATEWAY_CLIENT_SECRET}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
       interval: 10s
@@ -151,6 +157,8 @@ services:
       - DISCOVERY_SERVICE_URL=${DISCOVERY_SERVICE_URL}
       - CONFIG_SERVICE_URL=${CONFIG_SERVICE_URL}
       - MONGODB_URL=mongodb://root:salmane@mongo-ticket:27017/ticket-service?authSource=admin
+      # Keycloak
+      - ISSUER_URI=${ISSUER_URI}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
       interval: 10s
@@ -172,6 +180,11 @@ services:
       - DISCOVERY_SERVICE_URL=${DISCOVERY_SERVICE_URL}
       - CONFIG_SERVICE_URL=${CONFIG_SERVICE_URL}
       - MONGODB_URL=mongodb://root:salmane@mongo-match:27017/match-service?authSource=admin
+      # Keycloak
+      - ISSUER_URI=${ISSUER_URI}
+      - TOKEN_URI=${TOKEN_URI}
+      - CLIENT_ID=${MATCH_CLIENT_ID}
+      - CLIENT_SECRET=${MATCH_CLIENT_SECRET}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 10s
@@ -196,6 +209,11 @@ services:
       - CONFIG_SERVICE_URL=${CONFIG_SERVICE_URL}
       - MONGODB_URL=mongodb://root:salmane@mongo-booking:27017/booking-service?authSource=admin
       - KAFKA_URL=kafka:29092
+      # Keycloak
+      - ISSUER_URI=${ISSUER_URI}
+      - TOKEN_URI=${TOKEN_URI}
+      - CLIENT_ID=${BOOKING_CLIENT_ID}
+      - CLIENT_SECRET=${BOOKING_CLIENT_SECRET}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
       interval: 10s

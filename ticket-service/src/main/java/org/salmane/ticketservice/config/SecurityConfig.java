@@ -25,8 +25,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/actuator/health", "/actuator/refresh").permitAll()
+                        .anyRequest().authenticated()
+                ).oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(
                         jwtAuthenticationConverterForKeycloak()
                 )))
                 .build();
