@@ -272,6 +272,7 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: salmane
       KC_HEALTH_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
     ports:
       - "8181:8080"
     healthcheck:
